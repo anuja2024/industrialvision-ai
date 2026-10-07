@@ -1,0 +1,10 @@
+dataset:
+  name: visa
+  root: data/raw
+  split_file: data/raw/split_csv/1cls.csv
+
+  categories:
+    - pcb1
+    - pcb2
+    - pcb3
+    - pcb4

@@ -1,0 +1,24 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+
+    container_name: industrialvision-backend
+
+    ports:
+      - "8000:8000"
+
+    gpus: all
+
+    environment:
+      PYTHONUNBUFFERED: "1"
+      HF_HOME: /app/.cache/huggingface
+
+    volumes:
+      - ./data/features:/app/data/features:ro
+      - ./data/inference:/app/data/inference
+      - huggingface_cache:/app/.cache/huggingface
+
+volumes:
+  huggingface_cache:

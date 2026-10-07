@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IndustrialVision AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, Arial, sans-serif;
+            background: #080f20;
+            color: #f5f7ff;
+        }
+
+        .app {
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: #6d5dfc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 13px;
+        }
+
+        .brand-text h1 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .brand-text p {
+            margin: 2px 0 0;
+            color: #8e9ab8;
+            font-size: 9px;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #8490ad;
+            font-size: 10px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22d783;
+            box-shadow: 0 0 8px #22d783;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 225px 1fr;
+            gap: 12px;
+            min-height: calc(100vh - 60px);
+        }
+
+        .panel {
+            background: #10192d;
+            border: 1px solid #263552;
+            border-radius: 11px;
+            padding: 13px;
+        }
+
+        .sidebar h2,
+        .result-header h2 {
+            margin: 0;
+            font-size: 11px;
+        }
+
+        .field {
+            margin-top: 16px;
+        }
+
+        .field label {
+            display: block;
+            color: #9aa7c3;
+            font-size: 9px;
+            margin-bottom: 6px;
+        }
+
+        select,
+        input[type="file"] {
+            width: 100%;
+            background: #17233b;
+            border: 1px solid #30405e;
+            color: white;
+            border-radius: 6px;
+            padding: 8px;
+            font-size: 9px;
+        }
+
+        input[type="file"] {
+            padding: 7px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 12px;
+            border: 0;
+            border-radius: 6px;
+            padding: 9px;
+            background: #5c87ff;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #6f95ff;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .preview {
+            margin-top: 12px;
+            width: 100%;
+            height: 150px;
+            border-radius: 7px;
+            object-fit: contain;
+            background: #0b1222;
+            border: 1px solid #273754;
+            display: none;
+        }
+
+        .message {
+            margin-top: 8px;
+            color: #8e9ab8;
+            font-size: 9px;
+            line-height: 1.4;
+        }
+
+        .main {
+            min-width: 0;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .result-subtitle {
+            margin-top: 4px;
+            color: #7f8ba8;
+            font-size: 9px;
+        }
+
+        .decision {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 9px;
+            font-weight: 800;
+        }
+
+        .decision.pass {
+            color: #36e08a;
+            border: 1px solid #267b55;
+            background: #10291f;
+        }
+
+        .decision.review {
+            color: #ffc34d;
+            border: 1px solid #8a6420;
+            background: #2a2110;
+        }
+
+        .decision.hold {
+            color: #ff6b78;
+            border: 1px solid #87313a;
+            background: #2a1116;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .metric {
+            background: #16223a;
+            border: 1px solid #293958;
+            border-radius: 7px;
+            padding: 10px;
+        }
+
+        .metric-label {
+            color: #8996b4;
+            font-size: 8px;
+        }
+
+        .metric-value {
+            margin-top: 5px;
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .heatmap-container {
+            margin-top: 10px;
+            background: #0b1021;
+            border: 1px solid #273754;
+            border-radius: 7px;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .heatmap {
+            width: 100%;
+            max-height: 480px;
+            object-fit: contain;
+            display: none;
+        }
+
+        .placeholder {
+            color: #64718f;
+            font-size: 10px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .section {
+            margin-top: 10px;
+            background: #16223a;
+            border: 1px solid #293958;
+            border-radius: 7px;
+            padding: 11px;
+        }
+
+        .section-title {
+            font-size: 10px;
+            font-weight: 800;
+            margin-bottom: 7px;
+        }
+
+        .region {
+            font-family: monospace;
+            color: #93a3c5;
+            font-size: 8px;
+            line-height: 1.6;
+        }
+
+        .diagnosis {
+            margin-top: 10px;
+            background: #111e35;
+            border: 1px solid #34476d;
+            border-radius: 7px;
+            padding: 12px;
+        }
+
+        .diagnosis-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .diagnosis-title span:first-child {
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .ai-badge {
+            font-size: 8px;
+            color: #8ca7ff;
+            border: 1px solid #40558d;
+            padding: 4px 7px;
+            border-radius: 10px;
+        }
+
+        .diagnosis-text {
+            white-space: pre-wrap;
+            color: #dce3f5;
+            font-size: 10px;
+            line-height: 1.6;
+        }
+
+        .knowledge {
+            margin-top: 10px;
+        }
+
+        .knowledge-card {
+            background: #0e172a;
+            border: 1px solid #293958;
+            border-radius: 6px;
+            padding: 9px;
+            margin-top: 7px;
+        }
+
+        .knowledge-card strong {
+            font-size: 9px;
+        }
+
+        .knowledge-card p {
+            margin: 4px 0;
+            color: #9ca9c4;
+            font-size: 8px;
+            line-height: 1.5;
+        }
+
+        .feedback-section {
+            margin-top: 12px;
+            padding: 12px;
+            background: #0d172a;
+            border: 1px solid #34476d;
+            border-radius: 7px;
+        }
+
+        .feedback-title {
+            font-size: 10px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .feedback-text {
+            color: #8f9bb6;
+            font-size: 9px;
+            margin-bottom: 9px;
+        }
+
+        .feedback-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .feedback-button {
+            margin-top: 0;
+            padding: 8px;
+        }
+
+        .feedback-button.confirm {
+            background: #176b49;
+        }
+
+        .feedback-button.confirm:hover {
+            background: #1d8057;
+        }
+
+        .feedback-button.reject {
+            background: #702d38;
+        }
+
+        .feedback-button.reject:hover {
+            background: #873844;
+        }
+
+        .feedback-message {
+            margin-top: 8px;
+            color: #72e6ac;
+            font-size: 9px;
+        }
+
+        .loading {
+            display: none;
+            color: #9eb5ff;
+            font-size: 9px;
+            margin-top: 8px;
+        }
+
+        .error {
+            display: none;
+            margin-top: 10px;
+            padding: 9px;
+            border-radius: 6px;
+            border: 1px solid #7c343d;
+            background: #2a1217;
+            color: #ff8f99;
+            font-size: 9px;
+        }
+
+        @media (max-width: 800px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .metrics {
+                grid-template-columns: 1fr;
+            }
+
+            .feedback-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <header class="header">
+
+        <div class="brand">
+
+            <div class="logo">
+                IV
+            </div>
+
+            <div class="brand-text">
+                <h1>IndustrialVision AI</h1>
+                <p>
+                    Agentic Multimodal Industrial PCB Inspection
+                </p>
+            </div>
+
+        </div>
+
+        <div class="status">
+            <span class="status-dot"></span>
+            GPU inference backend
+        </div>
+
+    </header>
+
+
+    <div class="layout">
+
+        <aside class="panel sidebar">
+
+            <h2>
+                PCB Inspection
+            </h2>
+
+            <div class="field">
+
+                <label>
+                    PCB Category
+                </label>
+
+                <select id="category">
+
+                    <option value="pcb1">
+                        PCB1
+                    </option>
+
+                    <option value="pcb2">
+                        PCB2
+                    </option>
+
+                    <option value="pcb3">
+                        PCB3
+                    </option>
+
+                    <option value="pcb4">
+                        PCB4
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    PCB Image
+                </label>
+
+                <input
+                    id="file"
+                    type="file"
+                    accept="image/*"
+                >
+
+            </div>
+
+
+            <button id="inspectButton">
+                Inspect PCB
+            </button>
+
+
+            <img
+                id="preview"
+                class="preview"
+                alt="PCB preview"
+            >
+
+
+            <div
+                id="message"
+                class="message"
+            >
+                Select a PCB image to begin inspection.
+            </div>
+
+
+            <div
+                id="loading"
+                class="loading"
+            >
+                Running PatchCore inspection...
+            </div>
+
+
+            <div
+                id="error"
+                class="error"
+            ></div>
+
+        </aside>
+
+
+        <main class="panel main">
+
+            <div class="result-header">
+
+                <div>
+
+                    <h2>
+                        Inspection Result
+                    </h2>
+
+                    <div
+                        id="resultSubtitle"
+                        class="result-subtitle"
+                    >
+                        No inspection performed
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="decision"
+                    class="decision review"
+                >
+                    WAITING
+                </div>
+
+            </div>
+
+
+            <div class="metrics">
+
+                <div class="metric">
+
+                    <div class="metric-label">
+                        Anomaly Score
+                    </div>
+
+                    <div
+                        id="anomalyScore"
+                        class="metric-value"
+                    >
+                        —
+                    </div>
+
+                </div>
+
+
+                <div class="metric">
+
+                    <div class="metric-label">
+                        Confidence
+                    </div>
+
+                    <div
+                        id="confidence"
+                        class="metric-value"
+                    >
+                        —
+                    </div>
+
+                </div>
+
+
+                <div class="metric">
+
+                    <div class="metric-label">
+                        Processing Time
+                    </div>
+
+                    <div
+                        id="processingTime"
+                        class="metric-value"
+                    >
+                        —
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="heatmap-container">
+
+                <img
+                    id="heatmap"
+                    class="heatmap"
+                    alt="PatchCore anomaly heatmap"
+                >
+
+                <div
+                    id="heatmapPlaceholder"
+                    class="placeholder"
+                >
+                    Heatmap will appear after inspection.
+                </div>
+
+            </div>
+
+
+            <div class="section">
+
+                <div class="section-title">
+                    Detected Anomaly Region
+                </div>
+
+                <div
+                    id="regions"
+                    class="region"
+                >
+                    No regions detected.
+                </div>
+
+            </div>
+
+
+            <div
+                id="diagnosisSection"
+                class="diagnosis"
+                style="display:none;"
+            >
+
+                <div class="diagnosis-title">
+
+                    <span>
+                        AI Defect Diagnosis
+                    </span>
+
+                    <span class="ai-badge">
+                        SmolVLM + BM25 RAG
+                    </span>
+
+                </div>
+
+
+                <div
+                    id="diagnosisText"
+                    class="diagnosis-text"
+                ></div>
+
+
+                <div class="knowledge">
+
+                    <div class="section-title">
+                        Retrieved Technical Knowledge
+                    </div>
+
+                    <div id="knowledgeCards"></div>
+
+                </div>
+
+
+                <!-- HUMAN-IN-THE-LOOP -->
+
+                <div
+                    id="feedbackSection"
+                    class="feedback-section"
+                >
+
+                    <div class="feedback-title">
+                        Human Verification
+                    </div>
+
+                    <div class="feedback-text">
+                        Does the AI diagnosis appear correct?
+                    </div>
+
+
+                    <div class="feedback-buttons">
+
+                        <button
+                            id="confirmButton"
+                            class="feedback-button confirm"
+                            type="button"
+                        >
+                            ✓ Confirm Diagnosis
+                        </button>
+
+
+                        <button
+                            id="rejectButton"
+                            class="feedback-button reject"
+                            type="button"
+                        >
+                            ✕ Reject Diagnosis
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="feedbackMessage"
+                        class="feedback-message"
+                    ></div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    const category =
+        document.getElementById("category");
+
+    const fileInput =
+        document.getElementById("file");
+
+    const inspectButton =
+        document.getElementById("inspectButton");
+
+    const preview =
+        document.getElementById("preview");
+
+    const message =
+        document.getElementById("message");
+
+    const loading =
+        document.getElementById("loading");
+
+    const errorBox =
+        document.getElementById("error");
+
+    const resultSubtitle =
+        document.getElementById("resultSubtitle");
+
+    const decision =
+        document.getElementById("decision");
+
+    const anomalyScore =
+        document.getElementById("anomalyScore");
+
+    const confidence =
+        document.getElementById("confidence");
+
+    const processingTime =
+        document.getElementById("processingTime");
+
+    const heatmap =
+        document.getElementById("heatmap");
+
+    const heatmapPlaceholder =
+        document.getElementById(
+            "heatmapPlaceholder"
+        );
+
+    const regions =
+        document.getElementById("regions");
+
+    const diagnosisSection =
+        document.getElementById(
+            "diagnosisSection"
+        );
+
+    const diagnosisText =
+        document.getElementById(
+            "diagnosisText"
+        );
+
+    const knowledgeCards =
+        document.getElementById(
+            "knowledgeCards"
+        );
+
+    const feedbackSection =
+        document.getElementById(
+            "feedbackSection"
+        );
+
+    const confirmButton =
+        document.getElementById(
+            "confirmButton"
+        );
+
+    const rejectButton =
+        document.getElementById(
+            "rejectButton"
+        );
+
+    const feedbackMessage =
+        document.getElementById(
+            "feedbackMessage"
+        );
+
+
+    let selectedFile = null;
+
+    let latestInspection = null;
+
+    let latestDiagnosis = null;
+
+
+    fileInput.addEventListener(
+        "change",
+        () => {
+
+            selectedFile =
+                fileInput.files[0];
+
+            if (!selectedFile) {
+
+                preview.style.display =
+                    "none";
+
+                message.textContent =
+                    "Select a PCB image to begin inspection.";
+
+                return;
+            }
+
+
+            preview.src =
+                URL.createObjectURL(
+                    selectedFile
+                );
+
+            preview.style.display =
+                "block";
+
+
+            message.textContent =
+                `${selectedFile.name} selected.`;
+
+            errorBox.style.display =
+                "none";
+        }
+    );
+
+
+    inspectButton.addEventListener(
+        "click",
+        async () => {
+
+            if (!selectedFile) {
+
+                showError(
+                    "Please select a PCB image first."
+                );
+
+                return;
+            }
+
+
+            resetResults();
+
+
+            inspectButton.disabled =
+                true;
+
+
+            loading.style.display =
+                "block";
+
+            loading.textContent =
+                "Running PatchCore inspection...";
+
+
+            message.textContent =
+                "Inspecting PCB image...";
+
+
+            try {
+
+                const formData =
+                    new FormData();
+
+
+                formData.append(
+                    "category",
+                    category.value
+                );
+
+
+                formData.append(
+                    "file",
+                    selectedFile
+                );
+
+
+                const response =
+                    await fetch(
+                        "/inspect",
+                        {
+                            method: "POST",
+                            body: formData
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    const errorText =
+                        await response.text();
+
+                    throw new Error(
+                        `Inspection failed: HTTP ${response.status} ${errorText}`
+                    );
+                }
+
+
+                const result =
+                    await response.json();
+
+
+                console.log(
+                    "Inspection response:",
+                    result
+                );
+
+
+                displayInspectionResult(
+                    result
+                );
+
+
+                message.textContent =
+                    "Inspection completed. Running AI diagnosis...";
+
+
+                loading.textContent =
+                    "Running SmolVLM + technical knowledge retrieval...";
+
+
+                await runDiagnosis(
+                    result
+                );
+
+
+                message.textContent =
+                    "Inspection and AI diagnosis completed successfully.";
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    error
+                );
+
+
+                showError(
+                    error.message
+                );
+
+
+                message.textContent =
+                    "Inspection failed.";
+            }
+
+            finally {
+
+                inspectButton.disabled =
+                    false;
+
+                loading.style.display =
+                    "none";
+            }
+        }
+    );
+
+
+    function displayInspectionResult(
+        result
+    ) {
+
+        latestInspection =
+            result;
+
+
+        const size =
+            result.image_size ??
+            result.imageSize ??
+            null;
+
+
+        let width = null;
+
+        let height = null;
+
+
+        if (
+            size &&
+            typeof size === "object"
+        ) {
+
+            width =
+                size.width ??
+                size.w ??
+                size[0];
+
+            height =
+                size.height ??
+                size.h ??
+                size[1];
+        }
+
+
+        width =
+            width ??
+            result.width ??
+            result.image_width ??
+            result.imageWidth;
+
+
+        height =
+            height ??
+            result.height ??
+            result.image_height ??
+            result.imageHeight;
+
+
+        const categoryName =
+            String(
+                result.category ??
+                category.value
+            ).toUpperCase();
+
+
+        const dimensionText =
+            width && height
+                ? `${width} × ${height}`
+                : "Image dimensions unavailable";
+
+
+        resultSubtitle.textContent =
+            `${categoryName} · ${dimensionText}`;
+
+
+        anomalyScore.textContent =
+            Number(
+                result.anomaly_score ?? 0
+            ).toFixed(4);
+
+
+        confidence.textContent =
+            `${(
+                Number(
+                    result.confidence ?? 0
+                ) * 100
+            ).toFixed(1)}%`;
+
+
+        processingTime.textContent =
+            result.processing_time_ms != null
+                ? `${Math.round(
+                    Number(
+                        result.processing_time_ms
+                    )
+                )} ms`
+                : "—";
+
+
+        setDecision(
+            result.decision
+        );
+
+
+        if (result.heatmap) {
+
+            heatmap.src =
+                `data:image/png;base64,${result.heatmap}`;
+
+            heatmap.style.display =
+                "block";
+
+            heatmapPlaceholder.style.display =
+                "none";
+
+        }
+
+        else {
+
+            heatmap.style.display =
+                "none";
+
+            heatmapPlaceholder.style.display =
+                "block";
+        }
+
+
+        if (
+            result.regions &&
+            result.regions.length > 0
+        ) {
+
+            regions.innerHTML =
+                result.regions
+                    .map(
+                        (
+                            region,
+                            index
+                        ) => {
+
+                            return `
+                                Region ${index + 1}<br>
+                                x1=${region.x1},
+                                y1=${region.y1},
+                                x2=${region.x2},
+                                y2=${region.y2}<br>
+                                width=${region.width},
+                                height=${region.height}<br>
+                                score=${Number(
+                                    region.score ?? 0
+                                ).toFixed(4)}
+                            `;
+                        }
+                    )
+                    .join("<br>");
+
+        }
+
+        else {
+
+            regions.textContent =
+                "No anomaly region detected.";
+        }
+    }
+
+
+    async function runDiagnosis(
+        inspection
+    ) {
+
+        const formData =
+            new FormData();
+
+
+        formData.append(
+            "category",
+            category.value
+        );
+
+
+        formData.append(
+            "anomaly_score",
+            inspection.anomaly_score ?? 0
+        );
+
+
+        formData.append(
+            "decision",
+            inspection.decision ?? "REVIEW"
+        );
+
+
+        formData.append(
+            "confidence",
+            inspection.confidence ?? 0
+        );
+
+
+        formData.append(
+            "regions",
+            JSON.stringify(
+                inspection.regions ?? []
+            )
+        );
+
+
+        formData.append(
+            "file",
+            selectedFile
+        );
+
+
+        const response =
+            await fetch(
+                "/diagnose",
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+
+
+        if (!response.ok) {
+
+            const errorText =
+                await response.text();
+
+            throw new Error(
+                `AI diagnosis failed: HTTP ${response.status} ${errorText}`
+            );
+        }
+
+
+        const result =
+            await response.json();
+
+
+        console.log(
+            "Diagnosis response:",
+            result
+        );
+
+
+        displayDiagnosis(
+            result
+        );
+    }
+
+
+    function displayDiagnosis(
+        result
+    ) {
+
+        latestDiagnosis =
+            result;
+
+
+        diagnosisSection.style.display =
+            "block";
+
+
+        feedbackSection.style.display =
+            "block";
+
+
+        feedbackMessage.textContent =
+            "";
+
+
+        confirmButton.disabled =
+            false;
+
+
+        rejectButton.disabled =
+            false;
+
+
+        diagnosisText.textContent =
+            result.diagnosis ||
+            "No diagnosis returned.";
+
+
+        knowledgeCards.innerHTML =
+            "";
+
+
+        if (
+            result.retrieved_knowledge &&
+            result.retrieved_knowledge.length > 0
+        ) {
+
+            result.retrieved_knowledge
+                .forEach(
+                    item => {
+
+                        const card =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        card.className =
+                            "knowledge-card";
+
+
+                        card.innerHTML = `
+                            <strong>
+                                ${escapeHtml(
+                                    item.category ??
+                                    category.value
+                                ).toUpperCase()}
+                                ·
+                                ${escapeHtml(
+                                    item.defect ??
+                                    "Unknown defect"
+                                )}
+                            </strong>
+
+                            <p>
+                                ${escapeHtml(
+                                    item.description ??
+                                    ""
+                                )}
+                            </p>
+
+                            <p>
+                                <strong>
+                                    Recommended action:
+                                </strong>
+                                ${escapeHtml(
+                                    item.action ??
+                                    ""
+                                )}
+                            </p>
+
+                            <p>
+                                Retrieval score:
+                                ${Number(
+                                    item.retrieval_score ?? 0
+                                ).toFixed(4)}
+                            </p>
+                        `;
+
+
+                        knowledgeCards.appendChild(
+                            card
+                        );
+                    }
+                );
+
+        }
+
+        else {
+
+            knowledgeCards.innerHTML =
+                "<div class='region'>No knowledge retrieved.</div>";
+        }
+    }
+
+
+    confirmButton.addEventListener(
+        "click",
+        () => submitFeedback(
+            "confirmed"
+        )
+    );
+
+
+    rejectButton.addEventListener(
+        "click",
+        () => submitFeedback(
+            "rejected"
+        )
+    );
+
+
+    async function submitFeedback(
+        feedback
+    ) {
+
+        if (
+            !latestInspection ||
+            !latestDiagnosis
+        ) {
+
+            return;
+        }
+
+
+        confirmButton.disabled =
+            true;
+
+        rejectButton.disabled =
+            true;
+
+
+        feedbackMessage.textContent =
+            "Recording human feedback...";
+
+
+        const formData =
+            new FormData();
+
+
+        formData.append(
+            "category",
+            latestInspection.category ??
+            category.value
+        );
+
+
+        formData.append(
+            "filename",
+            latestInspection.filename ??
+            selectedFile?.name ??
+            "unknown"
+        );
+
+
+        formData.append(
+            "decision",
+            latestInspection.decision ??
+            "REVIEW"
+        );
+
+
+        formData.append(
+            "anomaly_score",
+            latestInspection.anomaly_score ??
+            0
+        );
+
+
+        formData.append(
+            "diagnosis",
+            latestDiagnosis.diagnosis ??
+            ""
+        );
+
+
+        formData.append(
+            "feedback",
+            feedback
+        );
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/feedback",
+                    {
+                        method: "POST",
+                        body: formData
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                const errorText =
+                    await response.text();
+
+                throw new Error(
+                    `Feedback failed: HTTP ${response.status} ${errorText}`
+                );
+            }
+
+
+            const result =
+                await response.json();
+
+
+            console.log(
+                "Feedback response:",
+                result
+            );
+
+
+            if (
+                feedback === "confirmed"
+            ) {
+
+                feedbackMessage.textContent =
+                    "✓ Diagnosis confirmed and recorded.";
+
+            }
+
+            else {
+
+                feedbackMessage.textContent =
+                    "✓ Diagnosis rejected and recorded.";
+            }
+
+        }
+
+        catch (error) {
+
+            console.error(
+                error
+            );
+
+
+            feedbackMessage.textContent =
+                "Could not record feedback.";
+
+
+            confirmButton.disabled =
+                false;
+
+            rejectButton.disabled =
+                false;
+        }
+    }
+
+
+    function setDecision(
+        value
+    ) {
+
+        const normalized =
+            String(
+                value ?? "WAITING"
+            ).toUpperCase();
+
+
+        decision.textContent =
+            normalized;
+
+
+        decision.className =
+            "decision";
+
+
+        if (
+            normalized === "PASS"
+        ) {
+
+            decision.classList.add(
+                "pass"
+            );
+
+        }
+
+        else if (
+            normalized === "HOLD"
+        ) {
+
+            decision.classList.add(
+                "hold"
+            );
+
+        }
+
+        else {
+
+            decision.classList.add(
+                "review"
+            );
+        }
+    }
+
+
+    function resetResults() {
+
+        latestInspection =
+            null;
+
+        latestDiagnosis =
+            null;
+
+
+        errorBox.style.display =
+            "none";
+
+
+        diagnosisSection.style.display =
+            "none";
+
+
+        feedbackMessage.textContent =
+            "";
+
+
+        confirmButton.disabled =
+            false;
+
+        rejectButton.disabled =
+            false;
+
+
+        diagnosisText.textContent =
+            "";
+
+
+        knowledgeCards.innerHTML =
+            "";
+
+
+        anomalyScore.textContent =
+            "—";
+
+
+        confidence.textContent =
+            "—";
+
+
+        processingTime.textContent =
+            "—";
+
+
+        resultSubtitle.textContent =
+            "Running inspection...";
+
+
+        decision.textContent =
+            "RUNNING";
+
+
+        decision.className =
+            "decision review";
+
+
+        regions.textContent =
+            "Detecting anomaly regions...";
+
+
+        heatmap.style.display =
+            "none";
+
+
+        heatmapPlaceholder.style.display =
+            "block";
+    }
+
+
+    function showError(
+        text
+    ) {
+
+        errorBox.textContent =
+            text;
+
+
+        errorBox.style.display =
+            "block";
+    }
+
+
+    function escapeHtml(
+        value
+    ) {
+
+        return String(value)
+            .replaceAll(
+                "&",
+                "&amp;"
+            )
+            .replaceAll(
+                "<",
+                "&lt;"
+            )
+            .replaceAll(
+                ">",
+                "&gt;"
+            )
+            .replaceAll(
+                '"',
+                "&quot;"
+            )
+            .replaceAll(
+                "'",
+                "&#039;"
+            );
+    }
+
+</script>
+
+</body>
+</html>
